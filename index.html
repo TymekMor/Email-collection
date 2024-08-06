@@ -40,45 +40,31 @@
   </head>
   <body>
     <div class="container">
-      <h1>Subscribe to our Newsletter</h1>
-      <form id="emailForm">
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          required
-        />
-        <button type="submit">Subscribe</button>
-      </form>
-      <p id="responseMessage"></p>
+        <h1>Subscribe to our Newsletter</h1>
+        <form id="emailForm">
+            <input type="email" id="email" placeholder="Enter your email" required />
+            <button type="submit">Subscribe</button>
+        </form>
+        <p id="responseMessage"></p>
     </div>
     <script>
-      const form = document.getElementById("emailForm");
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const email = document.getElementById("email").value;
-        fetch(
-          "https://script.google.com/macros/s/AKfycbyhMWDe3D2EUKH0B08lGB0cTqqpKL1PZA8LDfiPKGWKDOXUQrfV7z4nnvk2SbDCOhs/exec",
-          {
-            method: "POST",
-            mode: 'no-cors', // Add this line
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: email }),
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            document.getElementById("responseMessage").textContent =
-              "Thank you for subscribing!";
-            form.reset();
-          })
-          .catch((error) => {
-            document.getElementById("responseMessage").textContent =
-              "An error occurred. Please try again.";
-          });
-      });
+        const form = document.getElementById("emailForm");
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const script = document.createElement('script');
+            script.src = `https://script.google.com/macros/s/AKfycbyhMWDe3D2EUKH0B08lGB0cTqqpKL1PZA8LDfiPKGWKDOXUQrfV7z4nnvk2SbDCOhs/exec?callback=handleResponse&email=${encodeURIComponent(email)}`;
+            document.body.appendChild(script);
+        });
+
+        function handleResponse(data) {
+            if (data.success) {
+                document.getElementById("responseMessage").textContent = "Thank you for subscribing!";
+                form.reset();
+            } else {
+                document.getElementById("responseMessage").textContent = "An error occurred: " + data.message;
+            }
+        }
     </script>
-  </body>
+</body>
 </html>
